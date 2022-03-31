@@ -1,0 +1,14 @@
+alacritty
+yay
+bat
+go
+neovim
+curl
+git
+nvm
+restic
+telegram-desktop
+smplayer
+chezmoi
+github-cli
+htop
