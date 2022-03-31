@@ -12,3 +12,6 @@ smplayer
 chezmoi
 github-cli
 htop
+docker
+minikube
+kubectl

@@ -1,0 +1,11 @@
+#! /bin/sh
+
+for var in "$@"
+do
+    extension="${var##*.}"
+    outputName="${var%.*}.mp4"
+    if [$extension = "mp4"]; then
+        outputName="${var%.*}-x265.mp4"
+    fi
+    ffmpeg -i $var -c:v libx265 -crf 24 -c:a copy $outputName
+done
