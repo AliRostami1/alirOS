@@ -2,7 +2,7 @@
 # .$SHELLrc file
 
 # add alirOS scripts to $PATH 
-$PATH=$PATH:$HOME/alirOS/scripts/
+PATH=$PATH:$HOME/alirOS/scripts/
 
 # nvm init script
 source /usr/share/nvm/init-nvm.sh
