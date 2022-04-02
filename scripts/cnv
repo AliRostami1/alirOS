@@ -1,5 +1,16 @@
 #! /bin/sh
 
+red=`tput setaf 1`
+green=`tput setaf 2`
+blue=`tput setaf 3`
+reset=`tput sgr0`
+
+divider() {
+    echo "${red}"
+    printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+    echo "${reset}"
+}
+
 for var in "$@"
 do
     extension="${var##*.}"
@@ -7,5 +18,10 @@ do
     if [$extension = "mp4"]; then
         outputName="${var%.*}-x265.mp4"
     fi
+
+    divider
+    echo "${blue}Converting $var to $outputName${reset}"
     ffmpeg -i $var -c:v libx265 -crf 24 -c:a copy $outputName
+    echo "${green}Successfuly converted $var to $outputName${reset}"
+    divider
 done
