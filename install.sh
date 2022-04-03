@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/zsh
 
 # This file is meant to run first
 

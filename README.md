@@ -11,3 +11,4 @@ My personal configurations for a fresh arch linux install.
 - [x] Prevent installed aur and official packages to reinstall (--needed)
 - [ ] Every command should run if not already
 - [ ] Add git cred to chezmoi
+- [ ] Change default shell to zsh
