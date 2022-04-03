@@ -95,7 +95,8 @@ endSection "Installed Nodejs lts"
 
 # Login to github-cli
 startSection "Logging to Github"
-gh auth login
+until gh auth login; do echo "Trying again"; done
+
 endSection "Successfully logged in to Github"
 
 # Start Nitrogen with one random picture
