@@ -31,18 +31,24 @@ endSection() {
     printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 }
 
-# Make tmp and var directory
-mkdir $BASE_PATH/var $BASE_PATH/tmp
+# Make tmp and var directory if not already
+if [! -d "$BASE_PATH/var" ]; then
+    mkdir $BASE_PATH/var
+fi
+if [! -d "$BASE_PATH/var" ]; then
+    mkdir $BASE_PATH/tmp
+fi
+
 
 # Install all packages in pkglist.txt
 startSection "Installing pacman packages"
-sudo pacman -S - < pkglist.txt
+until sudo pacman -S - < pkglist.txt; do echo "Trying again"; done
 endSection "Installed pacman packages successfully"
 
 
 # Install all packages in aurlist.txt
 startSection "Installing aur packages"
-yay -S - < aurlist.txt
+until yay -S - < aurlist.txt; do echo "${blue}Trying again${reset}"; done
 endSection "Installed aur packages successfully"
 
 
@@ -67,7 +73,7 @@ git config --global init.defaultBranch main
 
 # Install Node and enable corepack (yarn and stuff)
 startSection "Installing Nodejs lts"
-nvm install --lts
+until nvm install --lts; do echo "Trying again"; done
 corepack enable 
 endSection "Installed Nodejs lts"
 
@@ -82,7 +88,7 @@ endSection "Successfully logged in to Github"
 
 # Apply chezmoi dotfiles from my own repository
 startSection "Applying chezmoi dotfiles"
-chezmoi init --apply https://github.com/AliRostami1/dotfiles.git
+until chezmoi init --apply https://github.com/AliRostami1/dotfiles.git; do echo "Trying again"; done
 endSection "Successfully applyed chezmoi dotfiles"
 
 # Enable services
