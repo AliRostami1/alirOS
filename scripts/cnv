@@ -5,23 +5,37 @@ green=`tput setaf 2`
 blue=`tput setaf 3`
 reset=`tput sgr0`
 
+quit() {
+    echo "$red"
+    echo "Do you want to quit ? (y/n)"
+    read ctrlc
+    if [ "$ctrlc" = 'y' ]; then
+        exit
+    fi
+    echo $reset
+}
+
+trap quit SIGINT
+trap quit SIGTERM
+
 divider() {
     echo "${red}"
     printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
     echo "${reset}"
 }
 
-for var in "$@"
+for filename in "$@"
 do
-    extension="${var##*.}"
-    outputName="${var%.*}.mp4"
+    extension="${filename##*.}"
+    outputName="${filename%.*}.mp4"
     if [$extension = "mp4"]; then
-        outputName="${var%.*}-x265.mp4"
+        outputName="${filename%.*}-x265.mp4"
     fi
 
     divider
-    echo "${blue}Converting $var to $outputName${reset}"
-    ffmpeg -i $var -c:v libx265 -crf 24 -c:a copy $outputName
-    echo "${green}Successfuly converted $var to $outputName${reset}"
+    echo "${blue}Converting $filename to $outputName${reset}"
+    ffmpeg -i $filename -c:v libx265 -crf 24 -c:a copy $outputName
+    echo "${green}Successfuly converted $filename to $outputName${reset}"
+    notify-send -a cnv -u normal "conversion completed" "file $filename is successfully converted to $outputName"
     divider
 done

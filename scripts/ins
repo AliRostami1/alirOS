@@ -1,6 +1,16 @@
 #! /bin/sh
+
+MY_PATH=$(dirname "$0")            # relative
+MY_PATH=$(cd "$MY_PATH" && pwd)    # absolutized and normalized
+if [[ -z "$MY_PATH" ]] ; then
+	# error; for some reason, the path is not accessible
+	# to the script (e.g. permissions re-evaled after suid)
+	exit 1  # fail
+fi
+
+
 if sudo pacman -S $1; then
-	echo $1 >> ~/projects/linuxinit/pkglist.txt
+	echo $1 >> "$MY_PATH"/../pkglist.txt
 	echo "Added $1 to pkglist"
 else
 	echo "ignored $1"
