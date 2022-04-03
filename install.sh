@@ -53,17 +53,20 @@ if [ ! -d "$BASE_PATH/var" ]; then
 fi
 
 
+# Updating the mirrors
+startSection "َUpdating mirrors"
+until sudo pacman -Syy; do echo "Trying again"; done
+startSection "َUpdated mirrors"
+
 # Install all packages in pkglist.txt
 startSection "Installing pacman packages"
-until sudo pacman -S - < pkglist.txt; do echo "Trying again"; done
+until sudo pacman --needed -S - < pkglist.txt; do echo "Trying again"; done
 endSection "Installed pacman packages successfully"
-
 
 # Install all packages in aurlist.txt
 startSection "Installing aur packages"
-until yay -S - < aurlist.txt; do echo "${blue}Trying again${reset}"; done
+until yay --needed -S - < aurlist.txt; do echo "${blue}Trying again${reset}"; done
 endSection "Installed aur packages successfully"
-
 
 # Append the alirOS script to the end of ~/.profile and ~/.zshrc file
 #startSection "Appending alirOS init script to .profile and .zshrc"
