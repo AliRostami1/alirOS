@@ -6,10 +6,20 @@
 # command failure
 set -e
 
+# Colors
 red=`tput setaf 1`
 green=`tput setaf 2`
 blue=`tput setaf 3`
 reset=`tput sgr0`
+
+# Base path
+BASE_PATH=$(dirname "$0")            # relative
+BASE_PATH=$(cd "$BASE_PATH" && pwd)    # absolutized and normalized
+if [[ -z "$BASE_PATH" ]] ; then
+	# error; for some reason, the path is not accessible
+	# to the script (e.g. permissions re-evaled after suid)
+	exit 1  # fail
+fi
 
 startSection() {
     printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
@@ -20,6 +30,9 @@ endSection() {
     echo "${red}====>${green} $1 ${reset}"
     printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 }
+
+# Make tmp and var directory
+mkdir $BASE_PATH/var $BASE_PATH/tmp
 
 # Install all packages in pkglist.txt
 startSection "Installing pacman packages"
@@ -42,13 +55,21 @@ echo 'source ~/alirOS/dotprofile-init.sh' >> ~/.profile
 echo "" >> ~/.zshrc # empty line
 echo "# alirOS source script" >> ~/.zshrc
 echo 'source ~/alirOS/dotshell-init.sh' >> ~/.zshrc
+
+source ~/.zshrc
 #endSection "Successfully appended alirOS init script to .profile and .zshrc"
 
 # Set global git credentials
-#startSection "Setting git credentials"
 git config --global user.email "ali.rostmi@live.com"
 git config --global user.name "Ali Rostami"
-#endSection "Successfully set git credentials"
+# Set main as default branch name in git init
+git config --global init.defaultBranch main
+
+# Install Node and enable corepack (yarn and stuff)
+startSection "Installing Nodejs lts"
+nvm install --lts
+corepack enable 
+endSection "Installed Nodejs lts"
 
 # Login to github-cli
 startSection "Logging to Github"
@@ -63,4 +84,25 @@ endSection "Successfully logged in to Github"
 startSection "Applying chezmoi dotfiles"
 chezmoi init --apply https://github.com/AliRostami1/dotfiles.git
 endSection "Successfully applyed chezmoi dotfiles"
+
+# Enable services
+sudo systemctl enable --now docker
+
+# Creating restic repo and making our first backup
+startSection "Creating restic repo and making a backup"
+echo "${green}Where to create restic repo?"
+while true; do
+    read resticPath 
+    if [ -d "$resticPath" ]; then
+        # Take action if $DIR exists. #
+        restic init --repo $resticPath
+        echo $resticPath > $BASE_PATH/var/restic-repo
+        restic -r $resticPath backup $HOME
+        break
+    else
+        echo "${red}ERROR: $resticPath doesn't exist${reset}"
+        echo "${green}Where to create restic repo?${reset}"
+    fi
+done
+endSection "Created restic repo and made a backup"
 

@@ -8,9 +8,8 @@ if [[ -z "$MY_PATH" ]] ; then
 	exit 1  # fail
 fi
 
-
 if sudo pacman -S $1; then
-	echo $1 >> "$MY_PATH"/../pkglist.txt
+	printf "\n$1" >> "$MY_PATH"/../pkglist.txt
 	echo "Added $1 to pkglist"
 else
 	echo "ignored $1"

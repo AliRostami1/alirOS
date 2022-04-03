@@ -21,3 +21,4 @@ ffmpeg
 obs-studio
 flameshot
 libreoffice-fresh
+virtualbox
