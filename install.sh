@@ -6,6 +6,19 @@
 # command failure
 set -e
 
+quit() {
+    echo "$red"
+    echo "Do you want to quit ? (y/n)"
+    read ctrlc
+    if [ "$ctrlc" = 'y' ]; then
+        exit
+    fi
+    echo $reset
+}
+
+trap quit SIGINT
+trap quit SIGTERM
+
 # Colors
 red=`tput setaf 1`
 green=`tput setaf 2`
@@ -32,10 +45,10 @@ endSection() {
 }
 
 # Make tmp and var directory if not already
-if [! -d "$BASE_PATH/var" ]; then
+if [ ! -d "$BASE_PATH/var" ]; then
     mkdir $BASE_PATH/var
 fi
-if [! -d "$BASE_PATH/var" ]; then
+if [ ! -d "$BASE_PATH/var" ]; then
     mkdir $BASE_PATH/tmp
 fi
 
